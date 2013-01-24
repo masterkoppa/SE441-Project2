@@ -1,7 +1,9 @@
-import scala.actors.Actor
+import akka.actor.{Actor, ActorRef}
 
 class Jail extends Actor {
-	def act() {
-	  // actor behavior goes here
-	}
+
+  def receive = {
+    case _ => 
+  }
+  
 }
