@@ -1,18 +1,15 @@
 import akka.actor.{Actor, ActorRef}
 
-class BodyScan extends Actor {
-
-  var queueActor: ActorRef = null
-  var securityActor: ActorRef = null
+class BodyScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
   
   def receive = {
     case passenger: Passenger => {
 
       val result = Math.random > .20
       if(result) {
-        System.out.println("Passenger %d is clean.".format(passenger.getId()));
+        System.out.println("Passenger %d's body is clean.".format(passenger.getId()));
       } else {
-        System.out.println("Passenger %d sets off the alarms.".format(passenger.getId()));
+        System.out.println("Passenger %d's body sets off the alarms.".format(passenger.getId()));
       }
       
       //Tell the security actor what's what

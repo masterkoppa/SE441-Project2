@@ -1,9 +1,6 @@
 import akka.actor.{Actor, ActorRef}
 
-class BagScan extends Actor {
-
-  var queueActor: ActorRef = null
-  var securityActor: ActorRef = null
+class BagScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
   
   def receive = {
     case passenger: Passenger => {

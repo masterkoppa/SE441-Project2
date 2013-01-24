@@ -1,9 +1,7 @@
 import akka.actor.{Actor, ActorRef}
 import scala.collection.mutable.HashMap
 
-class Security extends Actor {
-
-  var jail: ActorRef = null
+class Security(jail: ActorRef) extends Actor {
   private var passengerHash = HashMap.empty[Int, Boolean]
   
   def receive = {

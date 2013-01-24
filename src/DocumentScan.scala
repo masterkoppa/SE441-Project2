@@ -1,9 +1,17 @@
 import akka.actor.{Actor, ActorRef}
 
-class DocumentScan(queueCount: Int) extends Actor {
+class DocumentScan(queues: Array[ActorRef]) extends Actor {
 
-  var queues: Array[ActorRef] = new Array[ActorRef](queueCount)
   private var nextQueue = 0
+  
+  def this(queueCount: Int, jail: ActorRef) = { 
+    this(new Array[ActorRef](queueCount))
+    
+    for(i <- 0 until queueCount) {
+      queues(i) = Actor.actorOf(new QueueActor(jail))
+      queues(i).start()
+    }
+  }
   
   def receive : PartialFunction[Any, Unit] = {
     case passenger: Passenger => {

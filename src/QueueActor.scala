@@ -2,9 +2,23 @@ import akka.actor.{Actor, ActorRef}
 import scala.collection.mutable.Queue
 
 class QueueActor extends Actor {
-
-  var bagScan : ActorRef = null
-  var bodyScan : ActorRef = null
+ 
+  var bagScan: ActorRef = null
+  var bodyScan: ActorRef = null
+  
+  def this(jail: ActorRef) {
+    this()
+    
+    var security = Actor.actorOf( new Security(jail) )
+    security.start()
+    
+    bagScan = Actor.actorOf(new BagScan(this.self, security))
+    bagScan.start()
+    
+    bodyScan = Actor.actorOf(new BodyScan(this.self, security))
+    bodyScan.start()
+    
+  }
   
   private var bagStatus: Boolean = true
   private var bodyStatus: Boolean = true
