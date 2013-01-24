@@ -15,8 +15,10 @@ class Security extends Actor {
         passengerHash -= result.getPassenger().getId()
         if(oldRes.get && result.getResult()) {
           //They're FREE!
+          System.out.println("Passenger %d is sent on their way.".format(result.getPassenger().getId()))
         } else {
           //Send them to JAIL
+          System.out.println("Passenger %d is sent straight to jail and will not pass Go or collect $200.".format(result.getPassenger().getId()))
           jail ! result.getPassenger()
         }
       } else {
