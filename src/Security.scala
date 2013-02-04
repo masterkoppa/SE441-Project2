@@ -1,5 +1,6 @@
 import akka.actor.{Actor, ActorRef}
 import scala.collection.mutable.HashMap
+import akka.actor.Actors
 
 class Security(jail: ActorRef) extends Actor {
   private var passengerHash = HashMap.empty[Int, Boolean]
@@ -13,17 +14,23 @@ class Security(jail: ActorRef) extends Actor {
         passengerHash -= result.getPassenger().getId()
         if(oldRes.get && result.getResult()) {
           //They're FREE!
-          System.out.println("Passenger %d is sent on their way.".format(result.getPassenger().getId()))
+          printf("Passenger %d is sent on their way.\n", result.getPassenger().getId())
         } else {
           //Send them to JAIL
-          System.out.println("Passenger %d is sent straight to jail and will not pass Go or collect $200.".format(result.getPassenger().getId()))
+          printf("Passenger %d is sent straight to jail and will not pass Go or collect $200.\n", result.getPassenger().getId())
           jail ! result.getPassenger()
         }
       } else {
         //Otherwise we store it for later
         passengerHash.put(result.getPassenger().getId(), result.getResult())
       }
+      
+      
     } 
   }
   
+  override def postStop() = {
+	  printf("Security killed by PoisonPill, killing everyone else\n")
+	  Actors.registry().shutdownAll()
+  }
 }

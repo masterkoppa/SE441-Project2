@@ -1,5 +1,6 @@
 import akka.actor.{Actor, ActorRef}
 import scala.collection.mutable.Queue
+import akka.actor.PoisonPill
 
 class QueueActor extends Actor {
  
@@ -54,6 +55,12 @@ class QueueActor extends Actor {
       bodyStatus = true
       tryHandle()
     }
+  }
+  
+  override def postStop() = {
+	  printf("Queue killed by PoisonPill, killing everyone else\n")
+	  bagScan ! PoisonPill
+	  bodyScan ! PoisonPill
   }
   
 }

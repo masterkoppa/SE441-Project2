@@ -1,4 +1,6 @@
 import akka.actor.{Actor, ActorRef}
+import akka.actor.PoisonPill
+import akka.actor.Actors
 
 object Driver {
   
@@ -18,6 +20,8 @@ object Driver {
     for(i <- 0 until passengersPerDay) {
       documentScan ! new Passenger(i)
     }
+    
+    documentScan ! PoisonPill
   }
   
 }

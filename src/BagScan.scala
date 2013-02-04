@@ -1,4 +1,5 @@
 import akka.actor.{Actor, ActorRef}
+import akka.actor.PoisonPill
 
 class BagScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
   
@@ -18,6 +19,11 @@ class BagScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
       //Tell the Queue we're ready for more
       queueActor ! new BagReady
     }
+  }
+  
+  override def postStop() = {
+	  printf("BagScan killed by PoisonPill, killing everyone else\n")
+	  securityActor ! PoisonPill
   }
   
 }

@@ -1,12 +1,14 @@
 import akka.actor.{Actor, ActorRef}
+import akka.actor.PoisonPill
 
 class DocumentScan(queues: Array[ActorRef]) extends Actor {
 
   private var nextQueue = 0
+  private var count = 0;
   
   def this(queueCount: Int, jail: ActorRef) = { 
     this(new Array[ActorRef](queueCount))
-    
+    count = queueCount
     for(i <- 0 until queueCount) {
       queues(i) = Actor.actorOf(new QueueActor(jail))
       queues(i).start()
@@ -30,5 +32,14 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
       }
     }
   }
+  
+  override def postStop() = {
+	  printf("Document Scan killed by PoisonPill, killing everyone else\n")
+	  for(i <- 0 until count) {
+		  queues(i) ! PoisonPill
+	  }
+  }
+
+
   
 }
