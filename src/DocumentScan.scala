@@ -18,12 +18,12 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
   def receive: PartialFunction[Any, Unit] = {
     case passenger: Passenger => {
       
-      printf("Passenger %d arrives at the document scanner.", passenger.getId())
+      printf("Passenger %d arrives at the document scanner.\n", passenger.getId())
       System.out.flush()
       
       //Determine if the passenger will be turned away or not
       if (Math.random > 0.20) {
-        printf("Passenger %d has valid documents.", passenger.getId())
+        printf("Passenger %d has valid documents.\n", passenger.getId())
         System.out.flush()
         
         //Pass the passenger on to the proper queue
@@ -32,7 +32,7 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
         //Make sure we send the next passenger to the next queue
         nextQueue = (nextQueue + 1) % queues.length
       } else {
-        printf("Passenger %d is turned away.", passenger.getId())
+        printf("Passenger %d is turned away.\n", passenger.getId())
         System.out.flush()
       }
     }

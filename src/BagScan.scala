@@ -11,10 +11,10 @@ class BagScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
       
       //Print out the result
       if (result) {
-        printf("Passenger %d's bags are clean.", passenger.getId());
+        printf("Passenger %d's bags are clean.\n", passenger.getId());
         System.out.flush();
       } else {
-        printf("Passenger %d's bags set off the alarms.", passenger.getId());
+        printf("Passenger %d's bags set off the alarms.\n", passenger.getId());
         System.out.flush();
       }
       
