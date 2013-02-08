@@ -1,21 +1,22 @@
-A new day has begun!
-Passenger 0 arrives at the document scanner.
-Passenger 0 has valid documents.
-Passenger 1 arrives at the document scanner.
-Passenger 0's bags are clean.
-Passenger 0's body is clean.
-Passenger 1 has valid documents.
-Passenger 1's bags are clean.
-Passenger 1's body is clean.
-Passenger 1 is sent on their way.
-Passenger 0 is sent on their way.
-The day is over!
-A new day has begun!
-Passenger 0 arrives at the document scanner.
-Passenger 0 has valid documents.
-Passenger 1 arrives at the document scanner.
-Passenger 0's bags are clean.
-Passenger 1 is turned away.
-Passenger 0's body is clean.
-Passenger 0 is sent on their way.
-The day is over!
+A new day has begun!				#The day start message propagates
+Passenger 0 arrives at the document scanner.	
+Passenger 0 has valid documents.			#Passenger 0 is sent to a queue
+Passenger 1 arrives at the document scanner.	
+Passenger 0's bags are clean.			#Passenger 0's bags are checked
+Passenger 0's body is clean.			#Passenger 0 is checked
+Passenger 1 has valid documents.			#Passenger 1 is sent to a queue
+Passenger 1's bags are clean.			#Passenger 1's bags are checked
+Passenger 1's body is clean.			#Passenger 1 is checked
+Passenger 1 is sent on their way.		#Passenger 1 is sent home
+Passenger 0 is sent on their way.		#Passenger 0 is sent home
+The day is over!					#The system recieves SystemOffline
+A new day has begun!				#The day start message propagates
+Passenger 0 arrives at the document scanner.	
+Passenger 0 has valid documents.			#Passenger 0 is sent to a queue
+Passenger 1 arrives at the document scanner.	
+Passenger 0's bags are clean.			#Passenger 0's bags are checked
+Passenger 1 is turned away.			#Passenger 1 has invalid documents
+Passenger 0's body is clean.			#Passenger 0 is checked
+Passenger 0 is sent on their way.		#Passenger 0 is sent home
+The day is over!					#The system recieves SystemOffline
+						#Day is over, exit
