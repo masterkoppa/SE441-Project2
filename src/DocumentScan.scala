@@ -3,9 +3,9 @@ import akka.actor.PoisonPill
 
 class DocumentScan(queues: Array[ActorRef]) extends Actor {
 
-  private var nextQueue = 0
+  private var nextQueue = 0;
   private var count = 0;
-
+  
   def this(queueCount: Int, jail: ActorRef) = {
     this(new Array[ActorRef](queueCount))
     count = queueCount
@@ -17,9 +17,11 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
 
   def receive: PartialFunction[Any, Unit] = {
     case passenger: Passenger => {
-
+      
       printf("Passenger %d arrives at the document scanner.", passenger.getId())
       System.out.flush()
+      
+      //Determine if the passenger will be turned away or not
       if (Math.random > 0.20) {
         printf("Passenger %d has valid documents.", passenger.getId())
         System.out.flush()
@@ -34,16 +36,19 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
         System.out.flush()
       }
     }
-
+    
+    //Propagate the dayStart Message
     case dayStart: SystemOnline => {
       queues foreach (q => q ! dayStart)
     }
 
+    //Propagate the dayEnd Message
     case dayEnd: SystemOffline => {
       queues foreach (q => q ! dayEnd)
     }
   }
 
+  //Propagate the PosionPill down the chain
   override def postStop() = {
     for (i <- 0 until count) {
       queues(i) ! PoisonPill

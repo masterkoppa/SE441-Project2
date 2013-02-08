@@ -11,6 +11,7 @@ class Driver extends Actor {
   val jail = Actor.actorOf(new Jail(numQueues, self)).start()
   val documentScan = Actor.actorOf(new DocumentScan(numQueues, jail)).start()
 
+  //Try to restart the system for a second time as a proof of concept
   def nextDay() {
     if (currentDay < numDays) {
       currentDay += 1

@@ -4,8 +4,10 @@ class BodyScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
 
   def receive = {
     case passenger: Passenger => {
-
+    
+      //Calculate if passenger will pass or not
       val result = Math.random > .20
+      
       if (result) {
         printf("Passenger %d's body is clean.\n", passenger.getId());
         System.out.flush()
@@ -18,10 +20,12 @@ class BodyScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
       securityActor ! new Result(passenger, result)
     }
 
+    //Propagate the dayStart Message
     case dayStart: SystemOnline => {
       securityActor ! dayStart
     }
-
+    
+    //Propagate the dayEnd Message
     case dayEnd: SystemOffline => {
       securityActor ! dayEnd
     }

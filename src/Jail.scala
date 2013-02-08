@@ -3,9 +3,9 @@ import scala.collection.mutable.Set
 
 class Jail(numQueues: Int, driver: ActorRef) extends Actor {
 
-  var detainees = Set.empty[Int]
-  var readyQueues = 0
-  var emptyQueues = 0
+  var detainees = Set.empty[Int];
+  var readyQueues = 0;
+  var emptyQueues = 0;
 
   def receive = {
     case passenger: Passenger => {
@@ -13,7 +13,8 @@ class Jail(numQueues: Int, driver: ActorRef) extends Actor {
       System.out.flush()
       detainees += passenger.getId()
     }
-
+    
+    //Propagate the dayStart Message
     case dayStart: SystemOnline => {
       readyQueues += 1
       emptyQueues = 0
@@ -22,7 +23,8 @@ class Jail(numQueues: Int, driver: ActorRef) extends Actor {
       }
       
     }
-
+    
+    //Propagate the dayEnd Message
     case dayEnd: SystemOffline => {
       emptyQueues += 1
       readyQueues = 0

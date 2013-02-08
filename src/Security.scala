@@ -13,11 +13,13 @@ class Security() extends Actor {
   }
 
   def receive = {
+    //Propagate the dayStart Message
     case dayStart: SystemOnline => {
       shutdownExpected = false
       jail ! dayStart
     }
-
+    
+    //Propagate the dayEnd Message
     case dayEnd: SystemOffline => {
       if (shutdownExpected && passengerHash.size == 0) {
         jail ! dayEnd

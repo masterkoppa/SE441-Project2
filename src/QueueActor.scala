@@ -15,12 +15,14 @@ class QueueActor(jail: ActorRef) extends Actor {
       bagScan ! passenger
       bodyScan ! passenger
     }
-
+  
+    //Propagate the dayStart Message
     case dayStart: SystemOnline => {
       bagScan ! dayStart
       bodyScan ! dayStart
     }
-
+    
+    //Propagate the dayEnd Message
     case dayEnd: SystemOffline => {
       bagScan ! dayEnd
       bodyScan ! dayEnd
