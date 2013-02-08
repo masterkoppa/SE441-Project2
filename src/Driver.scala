@@ -1,27 +1,43 @@
-import akka.actor.{Actor, ActorRef}
-import akka.actor.PoisonPill
-import akka.actor.Actors
+import akka.actor.{ Actor, ActorRef, PoisonPill }
 
-object Driver {
-  
+class Driver extends Actor {
+
   //Initialize some constants
   private val numQueues = 3
-  private val passengersPerDay = 30
-  
-  def main(args: Array[String]) {
-    
-    val jail = Actor.actorOf[Jail]
-    jail.start()
-    
-    val documentScan = Actor.actorOf(new DocumentScan(numQueues, jail))
-    documentScan.start()
-    
-    //Add some Passengers
-    for(i <- 0 until passengersPerDay) {
-      documentScan ! new Passenger(i)
+  private val passengersPerDay = 2
+  private val numDays = 2
+
+  var currentDay = 0
+  val jail = Actor.actorOf(new Jail(numQueues, self)).start()
+  val documentScan = Actor.actorOf(new DocumentScan(numQueues, jail)).start()
+
+  def nextDay() {
+    if (currentDay < numDays) {
+      currentDay += 1
+      print("A new day has begun!\n")
+      documentScan ! new SystemOnline()
     }
-    
-    documentScan ! PoisonPill
   }
-  
+
+  def receive = {
+    case begin: BeginSimulation => {
+      nextDay()
+    }
+
+    case online: SystemOnline => {
+      //Send Passengers into the system
+      for (i <- 0 until passengersPerDay) {
+        documentScan ! new Passenger(i)
+      }
+
+      //Take the system offline
+      documentScan ! new SystemOffline()
+    }
+
+    case offline: SystemOffline => {
+      print("The day is over!\n")
+      nextDay()
+    }
+  }
+
 }
