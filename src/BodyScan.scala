@@ -8,15 +8,14 @@ class BodyScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
       val result = Math.random > .20
       if (result) {
         printf("Passenger %d's body is clean.\n", passenger.getId());
+        System.out.flush()
       } else {
         printf("Passenger %d's body sets off the alarms.\n", passenger.getId());
+        System.out.flush()
       }
 
       //Tell the security actor what's what
       securityActor ! new Result(passenger, result)
-
-      //Tell the Queue we're ready for more
-      queueActor ! new BodyReady
     }
 
     case dayStart: SystemOnline => {
@@ -29,7 +28,6 @@ class BodyScan(queueActor: ActorRef, securityActor: ActorRef) extends Actor {
   }
 
   override def postStop() = {
-    printf("BodyScan killed by PoisonPill, killing everyone else\n")
   }
 
 }

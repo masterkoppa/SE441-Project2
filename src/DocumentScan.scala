@@ -19,9 +19,11 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
     case passenger: Passenger => {
 
       System.out.println("Passenger %d arrives at the document scanner.".format(passenger.getId()))
+      System.out.flush()
       if (Math.random > 0.20) {
         System.out.println("Passenger %d has valid documents.".format(passenger.getId()))
-
+        System.out.flush()
+        
         //Pass the passenger on to the proper queue
         queues(nextQueue) ! passenger
 
@@ -29,11 +31,11 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
         nextQueue = (nextQueue + 1) % queues.length
       } else {
         System.out.println("Passenger %d is turned away.".format(passenger.getId()))
+        System.out.flush()
       }
     }
 
     case dayStart: SystemOnline => {
-      
       queues foreach (q => q ! dayStart)
     }
 
@@ -43,7 +45,6 @@ class DocumentScan(queues: Array[ActorRef]) extends Actor {
   }
 
   override def postStop() = {
-    printf("Document Scan killed by PoisonPill, killing everyone else\n")
     for (i <- 0 until count) {
       queues(i) ! PoisonPill
     }

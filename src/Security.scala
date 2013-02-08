@@ -1,11 +1,16 @@
-import akka.actor.{ Actor, ActorRef }
+import akka.actor.{ Actor, ActorRef, Actors }
 import scala.collection.mutable.HashMap
-import akka.actor.Actors
+import akka.actor.PoisonPill
 
-class Security(jail: ActorRef) extends Actor {
+class Security() extends Actor {
   private var passengerHash = HashMap.empty[Int, Boolean]
-
+  var jail: ActorRef = null
   var shutdownExpected: Boolean = false
+  
+  def this(jailActor: ActorRef) = {
+    this()
+    jail = jailActor
+  }
 
   def receive = {
     case dayStart: SystemOnline => {
@@ -14,10 +19,10 @@ class Security(jail: ActorRef) extends Actor {
     }
 
     case dayEnd: SystemOffline => {
-      shutdownExpected = true
-      if (passengerHash.size == 0) {
+      if (shutdownExpected && passengerHash.size == 0) {
         jail ! dayEnd
       }
+      shutdownExpected = true
     }
 
     case result: Result => {
@@ -25,15 +30,15 @@ class Security(jail: ActorRef) extends Actor {
       //If we have seen the result before, we can determine the outcome
       val oldRes = passengerHash.get(result.getPassenger().getId())
       if (oldRes.isDefined) {
-        passengerHash -= result.getPassenger().getId()
         if (oldRes.get && result.getResult()) {
           //They're FREE!
           printf("Passenger %d is sent on their way.\n", result.getPassenger().getId())
+          System.out.flush()
         } else {
           //Send them to JAIL
-          printf("Passenger %d is sent straight to jail and will not pass Go or collect $200.\n", result.getPassenger().getId())
           jail ! result.getPassenger()
         }
+        passengerHash -= result.getPassenger().getId()
 
         if (shutdownExpected && passengerHash.size == 0) {
           jail ! new SystemOffline()
@@ -46,7 +51,6 @@ class Security(jail: ActorRef) extends Actor {
   }
 
   override def postStop() = {
-    printf("Security killed by PoisonPill, killing everyone else\n")
     Actors.registry().shutdownAll()
   }
 }

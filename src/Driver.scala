@@ -14,8 +14,11 @@ class Driver extends Actor {
   def nextDay() {
     if (currentDay < numDays) {
       currentDay += 1
-      print("A new day has begun!\n")
+      println("A new day has begun!")
+      System.out.flush()
       documentScan ! new SystemOnline()
+    } else {
+      documentScan ! PoisonPill
     }
   }
 
@@ -35,7 +38,8 @@ class Driver extends Actor {
     }
 
     case offline: SystemOffline => {
-      print("The day is over!\n")
+      println("The day is over!")
+      System.out.flush()
       nextDay()
     }
   }
