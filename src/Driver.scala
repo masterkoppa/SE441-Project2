@@ -14,7 +14,7 @@ class Driver extends Actor {
   def nextDay() {
     if (currentDay < numDays) {
       currentDay += 1
-      println("A new day has begun!")
+      printf("A new day has begun!")
       System.out.flush()
       documentScan ! new SystemOnline()
     } else {
@@ -38,7 +38,7 @@ class Driver extends Actor {
     }
 
     case offline: SystemOffline => {
-      println("The day is over!")
+      printf("The day is over!")
       System.out.flush()
       nextDay()
     }
